@@ -8,6 +8,9 @@ pub fn amogus_sort<'a, T>(collection: &'a Vec<T>) -> Vec<&'a T>
 where
     T: Ord,
 {
+    if collection.len() < 1 {
+        return Vec::new();
+    }
     // very sus index
     let sussy_index = rand::thread_rng().gen_range(0..collection.len());
     // create the sussy baka
@@ -39,8 +42,19 @@ where
 
     // spawn sussy imposter
     if not_equal_indecies.len() != 0 {
-        let index = rand::thread_rng().gen_range(0..not_equal_indecies.len());
-        sussy_sorted_vector.insert(not_equal_indecies[index], sussy_number);
+        let index = not_equal_indecies[rand::thread_rng().gen_range(0..not_equal_indecies.len())];
+        let offset: i32 = if (index as i32 - sussy_index as i32) < 0 {
+            -1
+        } else {
+            1
+        };
+
+        let new_index: usize = if (index as i32 + offset) < 0 {
+            0
+        } else {
+            (index as i32 + offset) as usize
+        };
+        sussy_sorted_vector.insert(new_index, sussy_number);
     }
 
     return sussy_sorted_vector;
@@ -51,12 +65,55 @@ mod tests {
     use super::*;
 
     #[test]
-    fn it_works() {
+    fn test_random_random_vectors() {
+        for _ in 0..1000 {
+            test_random_vector();
+        }
+    }
+
+    fn test_random_vector() {
         let mut test_vector = Vec::<i32>::new();
         let mut rand = rand::thread_rng();
-        for _ in 0..20 {
+        for _ in 0..1000 {
             test_vector.push(rand.gen());
         }
+        assert!(!compare_vectors(
+            &test_vector,
+            &copy_items(amogus_sort(&test_vector))
+        ));
+    }
+
+    fn copy_items<T>(vec: Vec<&T>) -> Vec<T>
+    where
+        T: Copy,
+    {
+        vec.iter().map(|item| **item).collect::<Vec<T>>()
+    }
+
+    fn compare_vectors<T>(a: &Vec<T>, b: &Vec<T>) -> bool
+    where
+        T: Ord,
+    {
+        if a.len() != b.len() {
+            return false;
+        }
+
+        for i in 0..a.len() {
+            if a[i] != b[i] {
+                return false;
+            }
+        }
+        true
+    }
+
+    #[test]
+    fn test_edge_cases() {
+        let mut test_vector = vec![0, 0, 0, 0, 1];
+        let amogus_vector = amogus_sort(&test_vector);
+        assert!(!compare_vectors(&test_vector, &copy_items(amogus_vector)));
+        test_vector = vec![0];
+        amogus_sort(&test_vector);
+        test_vector = Vec::new();
         amogus_sort(&test_vector);
     }
 }
