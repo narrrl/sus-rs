@@ -2,6 +2,11 @@
 name = "sus-rs"
 version = "0.1.0"
 edition = "2021"
+authors = ["Nils Pukropp <nils@narl.io>"]
+description = "Collection of very sus algorithms"
+license = "MIT"
+license-file = "LICENSE"
+repository = "https://github.com/nirusu99/sus-rs"
 
 [dependencies]
 rand = "0.8.5"
